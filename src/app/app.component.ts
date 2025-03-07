@@ -11,7 +11,7 @@ import { RouterOutlet } from '@angular/router';
   styles: ' '
 })
 export class AppComponent {
-  title = 'Stream-in Play';
+  title = 'Beaten';
 
   constructor( ) {
  

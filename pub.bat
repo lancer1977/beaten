@@ -1,3 +1,1 @@
-
-del z:\streaminterop\html\*.* -y
-copy  dist\v3\browser\*.* z:\streaminterop\html
+npx angular-cli-ghpages --dir=dist/v3/browser
