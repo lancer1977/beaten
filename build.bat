@@ -1,0 +1,1 @@
+ng build --configuration production --base-href "https://lancer1977.github.io/beaten/"

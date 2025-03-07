@@ -1,0 +1,27 @@
+<div class="wally-container">
+    <h3>Wally001</h3>
+    <div class="header">
+      <p>Search</p>
+      <input type="text" placeholder="Search for games" [(ngModel)]="search" (ngModelChange)="filterGames()"  />
+  
+      <select [(ngModel)]="selectedConsole" (change)="filterGames()">
+        @for(item of consoles; track item){
+        <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </div>
+  
+    <div class="itemcontainer">
+
+        @for(item of visibleGames; track item){
+            <div  class="item">
+                <img [src]="item.url" alt="{{ item.game }}" loading="lazy" />
+                <div>
+                  <p><strong>{{ item.game }}</strong></p>
+                  <p>{{ item.console }}</p>
+                </div>               
+      </div>
+        }
+
+    </div>
+  </div>
