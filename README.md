@@ -1,29 +1,52 @@
-# V3
+# Game Tracker App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.6.
+## Overview
+Game Tracker is an **Angular** web application that takes a CSV file containing a list of beaten games and their respective systems, then organizes them into a clean and user-friendly UI. Each game entry includes a link to the How Long to Beat (HLTB) website for users to check playtime estimates.
 
-## Development server
+## Features
+- 📝 **CSV Parsing**: Reads a CSV file containing game titles and platforms.
+- 🎮 **Organized UI**: Displays the data in an easy-to-navigate Angular-based interface.
+- 🔗 **HLTB Integration**: Each game entry includes a link to its corresponding How Long to Beat page.
+- 📱 **Responsive Design**: Works on both desktop and mobile devices.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Current Limitations
+⚠️ The application is currently hardcoded to use data from the Google Sheet associated with `Segafan001`.
 
-## Code scaffolding
+✅ **Planned Improvements:**
+- Support for other Google Sheets.
+- Direct import from Google Sheets instead of requiring a CSV file.
+- Additional filtering and sorting options for the game list.
+- UI enhancements for a more polished experience.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Getting Started
 
-## Build
+### Requirements
+- **Angular CLI** installed (`npm install -g @angular/cli`)
+- A CSV file with game data (title, system, and optionally a How Long to Beat URL)
+- A web browser to view the application
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Installation
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/your-repo/game-tracker.git
+   cd game-tracker
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Run the application:**
+   ```sh
+   ng serve
+   ```
+4. **Open your browser** and navigate to `http://localhost:4200`.
 
-## Running unit tests
+## Contributing
+💡 Contributions are welcome! If you'd like to help improve support for different Google Sheets or enhance the UI, feel free to submit a pull request.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## License
+📜 This project is licensed under the **MIT License**.
 
-## Running end-to-end tests
+## Contact
+For questions or suggestions, feel free to open an issue or reach out on GitHub.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
-
-https://api.twitch.tv/helix/eventsub/subscriptions Content: {"type":"channel.follow","version":"2","condition":{"broadcaster_user_id":"141879576","moderator_user_id":"115534815"},"transport":{"method":"webhook","callback":"https://dev.channelcheevos.com/twitch-webhook","secret":"132ASedadfeqw#@$31!saz"}}
