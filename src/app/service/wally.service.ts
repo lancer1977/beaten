@@ -12,9 +12,9 @@ export class WallyService {
 
   constructor(private http: HttpClient) {}
 
-  getGames(): Observable<WallyGame[]> {
+  getGames(art: string): Observable<WallyGame[]> {
     return this.http.get(this.url, { responseType: 'text' }).pipe(
-      map(csvData => this.parseCSV(csvData)),
+      map(csvData => this.parseCSV(csvData, art)),
       catchError(error => {
         console.error('Error fetching games:', error);
         return of([]);
@@ -22,7 +22,7 @@ export class WallyService {
     );
   }
 
-  private parseCSV(csvData: string): WallyGame[] {
+  private parseCSV(csvData: string,art:string): WallyGame[] {
     return csvData
       .split('\n')
       .slice(1) // Skip the header
@@ -31,14 +31,15 @@ export class WallyService {
       .map(cols => ({
         game: cols[0],
         console: cols[1],
-        url: this.getGameImageUrl(cols[0], cols[1])
+        url: this.getGameImageUrl(cols[0], cols[1],art)
       }));
   }
 
-  private getGameImageUrl(game: string, console: string): string {
+  private getGameImageUrl(game: string, console: string, art: string): string {
     const formattedGame = game.replace(/ : /g, ' - ').replace(/: /g, ' - ').replace(/ /g, '%20');
-    const system = this.getSystem(console);
-    return `https://cdn.polyhydragames.com/images/retro_v2/${system}/${formattedGame}/boxart.png`;
+    const system = this.getSystem(console);    
+    //const art = 'marquee.png'
+    return `https://cdn.polyhydragames.com/images/retro_v2/${system}/${formattedGame}/${art}.png`;
   }
 
   private getSystem(console: string): string {
@@ -58,6 +59,7 @@ export class WallyService {
       'Sega Mega Drive': 'genesis',
       'Sega Master System': 'mastersystem',
       'Sega Saturn': 'saturn',
+      'Sega 32X': 'sega32x',
       'Playstation 1': 'ps1',
       'Playstation 2': 'ps2',
       'Playstation 3': 'ps3',
