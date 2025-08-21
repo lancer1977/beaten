@@ -22,7 +22,7 @@ export class WallyService {
   }
 
   public getGoogleDocsUrl(sheetId: string): string {
-    return `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+    return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
   }
 
   private parseCSV(csvData: string, art: string): Game[] {
