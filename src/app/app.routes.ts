@@ -8,7 +8,7 @@ import { GamesBeatenComponent } from './component/wally/beatengames.component';
 // Define your routes
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'segafan001', component: GamesBeatenComponent }
+  { path: ':streamerName', component: GamesBeatenComponent }
   // You can add more routes here
 ];
 
