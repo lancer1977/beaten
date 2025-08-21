@@ -4,13 +4,13 @@
       <button (click)="howLongToBeat()">H.L.T.B.</button>
       <input type="text" placeholder="Search for games" [(ngModel)]="search" (ngModelChange)="filterGames()"  />
   
-      <select [(ngModel)]="selectedConsole" (change)="filterGames()">
+      <select  title="Console Selected" [(ngModel)]="selectedConsole" (change)="filterGames()">
         @for(item of consoles; track item){
         <option [value]="item">{{ item }}</option>
         }
       </select>
       
-      <select [(ngModel)]="selectedImageType" (change)="updateBaseGames()">    
+      <select title="Image Selected" [(ngModel)]="selectedImageType" (change)="updateBaseGames()">    
         <option value="boxart-small">boxart</option>
         <option value="marquee">marquee</option>
  

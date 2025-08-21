@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Import your components
 import { HomeComponent } from './home/home.component';
-import { WallyComponent } from './component/wally/wally.component';
+import { WallyComponent } from './component/wally/beatengames.component';
 
 // Define your routes
 export const routes: Routes = [

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'; 
-import { WallyComponent } from '../component/wally/wally.component';
+import { WallyComponent } from '../component/wally/beatengames.component';
 import { FooterComponent } from "../footer/footer.component";
 
 @Component({

@@ -1,5 +1,5 @@
 import { WallyService } from '../../service/wally.service';
-import { WallyGame } from '../../models/WallyGame';
+import { Game } from '../../models/WallyGame';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./wally.component.scss'],
   standalone: true
 })
-export class WallyComponent implements OnInit {
+export class GamesBeatenComponent implements OnInit {
 
   onImageError($event: any) {
     console.log($event);
@@ -27,8 +27,8 @@ export class WallyComponent implements OnInit {
   howLongToBeat() {
     this.launch(this.search);
   }
-  games: WallyGame[] = [];
-  visibleGames: WallyGame[] = [];
+  games: Game[] = [];
+  visibleGames: Game[] = [];
   consoles: string[] = ['All'];
   selectedConsole: string = 'All';
   selectedImageType: string = 'boxart-small'
