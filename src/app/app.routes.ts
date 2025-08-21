@@ -3,12 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Import your components
 import { HomeComponent } from './home/home.component';
-import { WallyComponent } from './component/wally/beatengames.component';
+import { GamesBeatenComponent } from './component/wally/beatengames.component';
 
 // Define your routes
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-{path:'segafan001',component: WallyComponent}
+  { path: 'segafan001', component: GamesBeatenComponent }
   // You can add more routes here
 ];
 

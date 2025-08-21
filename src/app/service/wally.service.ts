@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, catchError, of } from 'rxjs';
-import { WallyGame } from '../models/WallyGame';
+import { Game } from '../models/WallyGame';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WallyService {
-  private sheetId = '10Hu_5R8jtQRNUHp7dk47c7Tm9atCEJcdJbQYPN1AOoE';
-  private url = `https://docs.google.com/spreadsheets/d/${this.sheetId}/gviz/tq?tqx=out:csv`;
 
-  constructor(private http: HttpClient) {}
 
-  getGames(art: string): Observable<WallyGame[]> {
-    return this.http.get(this.url, { responseType: 'text' }).pipe(
+  constructor(private http: HttpClient) { }
+
+  getGames(art: string, url: string): Observable<Game[]> {
+    return this.http.get(url, { responseType: 'text' }).pipe(
       map(csvData => this.parseCSV(csvData, art)),
       catchError(error => {
         console.error('Error fetching games:', error);
@@ -22,7 +21,11 @@ export class WallyService {
     );
   }
 
-  private parseCSV(csvData: string,art:string): WallyGame[] {
+  public getGoogleDocsUrl(sheetId: string): string {
+    return `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
+  }
+
+  private parseCSV(csvData: string, art: string): Game[] {
     return csvData
       .split('\n')
       .slice(1) // Skip the header
@@ -31,16 +34,27 @@ export class WallyService {
       .map(cols => ({
         game: cols[0],
         console: cols[1],
-        url: this.getGameImageUrl(cols[0], cols[1],art)
+        url: this.getGameImageUrl(cols[0], cols[1], art)
       }));
   }
 
   private getGameImageUrl(game: string, console: string, art: string): string {
     const formattedGame = game.replace(/ : /g, ' - ').replace(/: /g, ' - ').replace(/ /g, '%20');
-    const system = this.getSystem(console);    
+    const system = this.getSystem(console);
     //const art = 'marquee.png'
     return `https://cdn.polyhydragames.com/images/retro_v2/${system}/${formattedGame}/${art}.png`;
   }
+
+  nameToKey: { [name: string]: string } = {
+    Alice: "A1",
+    Bob: "B2",
+    Charlie: "C3"
+  };
+
+  public getKeyByName(name: string): string { return this.nameToKey[name] };
+
+
+
 
   private getSystem(console: string): string {
     const systems: { [key: string]: string } = {
@@ -53,7 +67,7 @@ export class WallyService {
       'Super Famicom': 'snes',
       'Nintendo Entertainment System': 'nes',
       'Gameboy Advance': 'gba',
-      'Gameboy': 'gb',      
+      'Gameboy': 'gb',
       'Gameboy Color': 'gbc',
       'Sega Genesis': 'genesis',
       'Sega Mega Drive': 'genesis',

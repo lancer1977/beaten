@@ -3,13 +3,15 @@ import { Game } from '../../models/WallyGame';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GoogleKeys } from '../../service/googlekeys';
 
 
 @Component({
   selector: 'app-wally',
-  templateUrl: './wally.component.html',
+  templateUrl: './beatengames.component.html',
   imports: [FormsModule],
-  styleUrls: ['./wally.component.scss'],
+  styleUrls: ['./beatengames.component.scss'],
   standalone: true
 })
 export class GamesBeatenComponent implements OnInit {
@@ -27,6 +29,9 @@ export class GamesBeatenComponent implements OnInit {
   howLongToBeat() {
     this.launch(this.search);
   }
+  @Input() title: string = 'Games Beaten';
+  streamerName = '';
+  sheetId = '';
   games: Game[] = [];
   visibleGames: Game[] = [];
   consoles: string[] = ['All'];
@@ -34,7 +39,14 @@ export class GamesBeatenComponent implements OnInit {
   selectedImageType: string = 'boxart-small'
   search: string = '';
 
-  constructor(private wallyService: WallyService) { }
+  constructor(private wallyService: WallyService, private router: Router) {
+    const url = this.router.url;        // e.g. "/dread"
+    this.streamerName = url.split('/')[1];   // "dread"
+    if (this.streamerName === 'beaten') {
+      this.streamerName = url.split('/')[2];   // "dread"
+    }
+    this.sheetId = GoogleKeys.getKeyByName(this.streamerName);
+  }
 
   ngOnInit() {
     console.log('on Init');
@@ -42,7 +54,9 @@ export class GamesBeatenComponent implements OnInit {
   }
 
   updateBaseGames() {
-    this.wallyService.getGames(this.selectedImageType).subscribe((games) => {
+    var url = this.wallyService.getGoogleDocsUrl(this.sheetId);
+
+    this.wallyService.getGames(this.selectedImageType, url).subscribe((games) => {
       this.games = games;
       this.consoles = ['All', ...Array.from(new Set(games.map(g => g.console))).sort()];
       this.filterGames();
