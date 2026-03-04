@@ -1,5 +1,8 @@
 # Game Tracker App
 
+**Vault Project:** `~/vaults/polyhydra/20_Projects/cc-beaten`
+
+
 ## Overview
 Game Tracker is an **Angular** web application that takes a CSV file containing a list of beaten games and their respective systems, then organizes them into a clean and user-friendly UI. Each game entry includes a link to the How Long to Beat (HLTB) website for users to check playtime estimates.
 
