@@ -38,6 +38,15 @@ export class GamesBeatenComponent implements OnInit {
   selectedConsole: string = 'All';
   selectedImageType: string = 'boxart-small'
   search: string = '';
+  
+  // Sorting
+  sortBy: string = 'title-asc';
+  sortOptions = [
+    { value: 'title-asc', label: 'Title (A-Z)' },
+    { value: 'title-desc', label: 'Title (Z-A)' },
+    { value: 'system', label: 'System' },
+    { value: 'date-added', label: 'Date Added' }
+  ];
 
   constructor(private wallyService: WallyService, private router: Router) {
     const url = this.router.url;        // e.g. "/dread"
@@ -46,6 +55,9 @@ export class GamesBeatenComponent implements OnInit {
       this.streamerName = url.split('/')[2];   // "dread"
     }
     this.sheetId = GoogleKeys.getKeyByName(this.streamerName);
+    
+    // Load persisted filters from localStorage
+    this.loadPersistedFilters();
   }
 
   ngOnInit() {
@@ -63,14 +75,59 @@ export class GamesBeatenComponent implements OnInit {
     });
   }
 
+  loadPersistedFilters() {
+    try {
+      const saved = localStorage.getItem('cc-beaten-filters');
+      if (saved) {
+        const filters = JSON.parse(saved);
+        this.selectedConsole = filters.selectedConsole || 'All';
+        this.selectedImageType = filters.selectedImageType || 'boxart-small';
+        this.search = filters.search || '';
+        this.sortBy = filters.sortBy || 'title-asc';
+      }
+    } catch (e) {
+      console.warn('Failed to load persisted filters', e);
+    }
+  }
+
+  persistFilters() {
+    try {
+      localStorage.setItem('cc-beaten-filters', JSON.stringify({
+        selectedConsole: this.selectedConsole,
+        selectedImageType: this.selectedImageType,
+        search: this.search,
+        sortBy: this.sortBy
+      }));
+    } catch (e) {
+      console.warn('Failed to persist filters', e);
+    }
+  }
 
   filterGames() {
     console.log('filtering games');
     this.visibleGames = this.games.filter(game =>
       (this.selectedConsole === 'All' || game.console === this.selectedConsole) &&
       (this.search === '' || game.game.toLowerCase().includes(this.search.toLowerCase()))
-    ).sort((a, b) =>
-      a.console.localeCompare(b.console) || a.game.localeCompare(b.game)
-    );;
+    );
+    this.sortGames();
+    this.persistFilters();
+  }
+
+  sortGames() {
+    this.visibleGames.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'title-asc':
+          return a.game.localeCompare(b.game);
+        case 'title-desc':
+          return b.game.localeCompare(a.game);
+        case 'system':
+          return a.console.localeCompare(b.console) || a.game.localeCompare(b.game);
+        case 'date-added':
+          // If there's a date field, use it; otherwise keep original order
+          return 0;
+        default:
+          return a.console.localeCompare(b.console) || a.game.localeCompare(b.game);
+      }
+    });
   }
 }

@@ -13,12 +13,24 @@
       <select title="Image Selected" [(ngModel)]="selectedImageType" (change)="updateBaseGames()">    
         <option value="boxart-small">boxart</option>
         <option value="marquee">marquee</option>
- 
+      </select>
+
+      <select title="Sort By" [(ngModel)]="sortBy" (change)="filterGames()">
+        @for(opt of sortOptions; track opt.value){
+        <option [value]="opt.value">{{ opt.label }}</option>
+        }
       </select>
 
       <h3  >SEGAFAN001</h3>
     </div>
   
+    @if(visibleGames.length === 0 && games.length > 0) {
+      <div class="empty-state">
+        <p>No games match your filters.</p>
+        <button (click)="search = ''; selectedConsole = 'All'; filterGames()">Clear Filters</button>
+      </div>
+    }
+
     <div class="itemcontainer">
 
         @for(item of visibleGames; track item){
