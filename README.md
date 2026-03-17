@@ -12,6 +12,8 @@ Game Tracker is an **Angular** web application that takes a CSV file containing 
 - 🔗 **HLTB Integration**: Each game entry includes a link to its corresponding How Long to Beat page.
 - 📱 **Responsive Design**: Works on both desktop and mobile devices.
 - ⚙️ **Custom Sheet Configuration**: Connect to your own publicly published Google Sheet.
+- 🔍 **Filter & Search**: Filter games by platform, search by title, and sort by various criteria.
+- 💾 **Persisted Preferences**: Active filters and sort options automatically saved to localStorage.
 
 ## Configuration
 
@@ -49,6 +51,23 @@ Your sheet will now be available when you navigate to `/{streamerName}`.
 - Navigate to `/{streamerName}` to load a specific sheet
 - Use the dropdown in the game list to switch between configured sheets
 - Your selection persists across sessions
+
+### Filtering & Sorting
+
+The game list supports powerful filtering and sorting options:
+
+**Sorting:**
+- **Title (A-Z)**: Sort games alphabetically by title
+- **Title (Z-A)**: Sort games in reverse alphabetical order
+- **System**: Sort by platform/console name
+- **Date Added**: Sort by most recently added (newest first)
+
+**Filtering:**
+- **Platform Filter**: Dropdown to filter games by console/platform
+- **Search**: Type to search games by title (with 300ms debounce for performance)
+- **Clear Filters**: Reset all filters to default values with one click
+
+All filter and sort preferences are automatically saved to your browser's localStorage, so your settings persist across page reloads and sessions.
 
 ### Troubleshooting
 
