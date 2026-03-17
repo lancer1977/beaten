@@ -1,0 +1,135 @@
+<div class="sheets-settings-container">
+  <h2>Google Sheets Configuration</h2>
+  
+  <p class="description">
+    Connect to a publicly published Google Sheet to track your beat 'em ups game collection.
+    <a href="https://support.google.com/docs/u/0/answer/183965" target="_blank">How to publish a sheet</a>
+  </p>
+
+  <!-- Configuration Form -->
+  <div class="config-form">
+    <h3>{{ editingConfig ? 'Edit Configuration' : 'Add New Sheet' }}</h3>
+    
+    <div class="form-group">
+      <label for="streamerName">Streamer Name</label>
+      <input 
+        type="text" 
+        id="streamerName" 
+        [(ngModel)]="streamerName" 
+        placeholder="e.g., SEGAFAN001"
+        [disabled]="!!editingConfig"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="sheetId">Google Sheet ID or URL</label>
+      <input 
+        type="text" 
+        id="sheetId" 
+        [(ngModel)]="sheetId" 
+        placeholder="Enter Sheet ID (abc123...) or full URL"
+      />
+      <button 
+        class="btn-secondary" 
+        (click)="validateSheet()" 
+        [disabled]="!sheetId.trim() || isValidating">
+        {{ isValidating ? 'Validating...' : 'Validate' }}
+      </button>
+    </div>
+
+    @if (validationResult) {
+      <div class="validation-result" [class.valid]="validationResult.valid" [class.invalid]="!validationResult.valid">
+        @if (validationResult.valid) {
+          <span>✓ {{ validationResult.title }}</span>
+        } @else {
+          <span>✗ {{ validationResult.error }}</span>
+        }
+      </div>
+    }
+
+    <!-- Column Mapping -->
+    <div class="column-mapping">
+      <h4>Column Mapping</h4>
+      <p class="hint">Enter the column names from your sheet that contain each field</p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="colTitle">Title Column</label>
+          <input type="text" id="colTitle" [(ngModel)]="columnMapping.title" placeholder="title" />
+        </div>
+        <div class="form-group">
+          <label for="colPlatform">Platform Column</label>
+          <input type="text" id="colPlatform" [(ngModel)]="columnMapping.platform" placeholder="platform" />
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="colGenre">Genre Column</label>
+          <input type="text" id="colGenre" [(ngModel)]="columnMapping.genre" placeholder="genre" />
+        </div>
+        <div class="form-group">
+          <label for="colStatus">Status Column</label>
+          <input type="text" id="colStatus" [(ngModel)]="columnMapping.status" placeholder="status" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        class="btn-primary" 
+        (click)="saveConfig()" 
+        [disabled]="!streamerName.trim() || !sheetId.trim() || !validationResult?.valid">
+        {{ editingConfig ? 'Update' : 'Save' }} Configuration
+      </button>
+      
+      @if (editingConfig) {
+        <button class="btn-secondary" (click)="resetForm()">Cancel</button>
+      }
+    </div>
+  </div>
+
+  <!-- Saved Configurations -->
+  <div class="saved-configs">
+    <h3>Saved Configurations</h3>
+    
+    @if (configs.length === 0) {
+      <p class="empty-state">No sheet configurations saved yet.</p>
+    } @else {
+      <div class="config-list">
+        @for (config of configs; track config.sheetId) {
+          <div class="config-item">
+            <div class="config-info">
+              <strong>{{ config.name }}</strong>
+              <span class="sheet-id">{{ config.sheetId }}</span>
+              <span class="mapping">
+                {{ config.columnMapping.title }} / {{ config.columnMapping.platform }} / 
+                {{ config.columnMapping.genre }} / {{ config.columnMapping.status }}
+              </span>
+            </div>
+            <div class="config-actions">
+              <button class="btn-small" (click)="editConfig(config)">Edit</button>
+              <button 
+                class="btn-small btn-danger" 
+                (click)="showDeleteConfirm = config.name || ''"
+                *ngIf="showDeleteConfirm !== config.name">
+                Delete
+              </button>
+              @if (showDeleteConfirm === config.name) {
+                <span class="confirm-delete">
+                  Confirm?
+                  <button class="btn-small btn-danger" (click)="deleteConfig(config.name || '')">Yes</button>
+                  <button class="btn-small" (click)="showDeleteConfirm = ''">No</button>
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (configs.length > 0) {
+      <button class="btn-danger" (click)="clearAll()">Clear All Configurations</button>
+    }
+  </div>
+</div>

@@ -11,15 +11,52 @@ Game Tracker is an **Angular** web application that takes a CSV file containing 
 - 🎮 **Organized UI**: Displays the data in an easy-to-navigate Angular-based interface.
 - 🔗 **HLTB Integration**: Each game entry includes a link to its corresponding How Long to Beat page.
 - 📱 **Responsive Design**: Works on both desktop and mobile devices.
+- ⚙️ **Custom Sheet Configuration**: Connect to your own publicly published Google Sheet.
 
-## Current Limitations
-⚠️ The application is currently hardcoded to use data from the Google Sheet associated with `Segafan001`.
+## Configuration
 
-✅ **Planned Improvements:**
-- Support for other Google Sheets.
-- Direct import from Google Sheets instead of requiring a CSV file.
-- Additional filtering and sorting options for the game list.
-- UI enhancements for a more polished experience.
+### Setting Up Your Google Sheet
+
+1. **Prepare Your Sheet**: Your Google Sheet should have columns for:
+   - Title (game name)
+   - Platform/Console
+   - Genre (optional)
+   - Status (optional)
+
+2. **Publish Your Sheet**:
+   - Open your Google Sheet
+   - Go to **File > Share > Publish to web**
+   - Select the sheet/tab you want to share
+   - Click **Publish**
+
+3. **Get Your Sheet ID**:
+   - From the URL: `https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit`
+   - The Sheet ID is the long string between `/d/` and `/edit`
+
+### Configuring in the App
+
+1. Click **Settings** in the navigation menu
+2. Enter a **Streamer Name** (identifier for this configuration)
+3. Paste your **Google Sheet ID or full URL**
+4. Click **Validate** to verify the sheet is accessible
+5. Adjust **Column Mapping** if your sheet uses different column names
+6. Click **Save Configuration**
+
+Your sheet will now be available when you navigate to `/{streamerName}`.
+
+### Switching Between Sheets
+
+- Navigate to `/{streamerName}` to load a specific sheet
+- Use the dropdown in the game list to switch between configured sheets
+- Your selection persists across sessions
+
+### Troubleshooting
+
+**"Sheet not found"**: Verify the Sheet ID is correct.
+
+**"Sheet is not publicly readable"**: Make sure you've published the sheet via File > Share > Publish to web.
+
+**"Network error"**: Check your internet connection and the Google Sheets URL.
 
 ## Getting Started
 
