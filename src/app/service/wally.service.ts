@@ -31,10 +31,11 @@ export class WallyService {
       .slice(1) // Skip the header
       .map(line => line.replace(/"/g, '').split(',').map(col => col.trim()))
       .filter(cols => cols.length >= 2 && cols[0] && cols[1])
-      .map(cols => ({
+      .map((cols, index) => ({
         game: cols[0],
         console: cols[1],
-        url: this.getGameImageUrl(cols[0], cols[1], art)
+        url: this.getGameImageUrl(cols[0], cols[1], art),
+        rowIndex: index
       }));
   }
 

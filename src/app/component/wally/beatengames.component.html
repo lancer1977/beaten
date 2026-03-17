@@ -2,7 +2,10 @@
  
     <div class="header"> 
       <button (click)="howLongToBeat()">H.L.T.B.</button>
-      <input type="text" placeholder="Search for games" [(ngModel)]="search" (ngModelChange)="filterGames()"  />
+      <input type="text" placeholder="Search games by title..." [ngModel]="search" (ngModelChange)="onSearchInput($event)"  />
+      @if(search !== '') {
+        <button class="clear-btn" (click)="clearSearch()" title="Clear search">✕</button>
+      }
   
       <select  title="Console Selected" [(ngModel)]="selectedConsole" (change)="filterGames()">
         @for(item of consoles; track item){
@@ -21,13 +24,25 @@
         }
       </select>
 
-      <h3  >SEGAFAN001</h3>
+      <!-- Sheet Selection -->
+      <select title="Sheet Selection" [(ngModel)]="selectedSheetId" (change)="onSheetChange(selectedSheetId)">
+        @for(sheet of availableSheets; track sheet.sheetId){
+        <option [value]="sheet.sheetId">{{ sheet.name || 'Custom Sheet' }}</option>
+        }
+      </select>
+
+      @if(filtersActive) {
+        <button class="clear-filters-btn" (click)="clearFilters()" title="Reset all filters">Reset</button>
+        <span class="filter-indicator">●</span>
+      }
+
+      <h3  >{{ streamerName || 'SEGAFAN001' }}</h3>
     </div>
   
     @if(visibleGames.length === 0 && games.length > 0) {
       <div class="empty-state">
         <p>No games match your filters.</p>
-        <button (click)="search = ''; selectedConsole = 'All'; filterGames()">Clear Filters</button>
+        <button (click)="clearFilters()">Clear Filters</button>
       </div>
     }
 

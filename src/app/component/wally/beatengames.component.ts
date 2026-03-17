@@ -1,10 +1,13 @@
 import { WallyService } from '../../service/wally.service';
 import { Game } from '../../models/WallyGame';
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, OnDestroy } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GoogleKeys } from '../../service/googlekeys';
+import { GoogleKeys, SheetConfig, setRuntimeConfig, getAllSheetIds, DEFAULT_SHEET_ID } from '../../service/googlekeys';
+import { SheetsConfigService, SheetsConfigState } from '../../service/sheets-config.service';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 
 @Component({
@@ -14,7 +17,7 @@ import { GoogleKeys } from '../../service/googlekeys';
   styleUrls: ['./beatengames.component.scss'],
   standalone: true
 })
-export class GamesBeatenComponent implements OnInit {
+export class GamesBeatenComponent implements OnInit, OnDestroy {
 
   onImageError($event: any) {
     console.log($event);
@@ -39,6 +42,10 @@ export class GamesBeatenComponent implements OnInit {
   selectedImageType: string = 'boxart-small'
   search: string = '';
   
+  // Debounced search
+  private searchSubject = new Subject<string>();
+  private searchSubscription: Subscription | null = null;
+  
   // Sorting
   sortBy: string = 'title-asc';
   sortOptions = [
@@ -48,21 +55,73 @@ export class GamesBeatenComponent implements OnInit {
     { value: 'date-added', label: 'Date Added' }
   ];
 
-  constructor(private wallyService: WallyService, private router: Router) {
+  // Sheet configuration
+  availableSheets: SheetConfig[] = [];
+  selectedSheetId: string = '';
+
+  constructor(private wallyService: WallyService, private router: Router, private sheetsConfig: SheetsConfigService) {
     const url = this.router.url;        // e.g. "/dread"
     this.streamerName = url.split('/')[1];   // "dread"
     if (this.streamerName === 'beaten') {
       this.streamerName = url.split('/')[2];   // "dread"
     }
+    
+    // Load available sheets and set initial sheet ID
+    this.availableSheets = getAllSheetIds();
     this.sheetId = GoogleKeys.getKeyByName(this.streamerName);
+    this.selectedSheetId = this.sheetId;
     
     // Load persisted filters from localStorage
     this.loadPersistedFilters();
+    
+    // Setup debounced search (300ms)
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.filterGames();
+      });
   }
 
   ngOnInit() {
     console.log('on Init');
+    
+    // Validate sheet accessibility on startup
+    if (this.sheetId) {
+      console.log(`Validating sheet access for: ${this.streamerName} (${this.sheetId})`);
+      this.sheetsConfig.validateSheetAccess(this.sheetId).subscribe(result => {
+        if (result.valid) {
+          console.log(`✅ Sheet accessible: ${result.title}`);
+        } else {
+          console.warn(`⚠️ Sheet validation failed for ${this.streamerName}: ${result.error}`);
+        }
+      });
+    }
+    
     this.updateBaseGames();
+  }
+  
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Handle search input with debounce
+   */
+  onSearchInput(value: string): void {
+    this.search = value;
+    this.searchSubject.next(value);
+  }
+
+  /**
+   * Handle sheet selection change
+   */
+  onSheetChange(newSheetId: string): void {
+    if (newSheetId && newSheetId !== this.sheetId) {
+      this.sheetId = newSheetId;
+      this.updateBaseGames();
+    }
   }
 
   updateBaseGames() {
@@ -123,11 +182,39 @@ export class GamesBeatenComponent implements OnInit {
         case 'system':
           return a.console.localeCompare(b.console) || a.game.localeCompare(b.game);
         case 'date-added':
-          // If there's a date field, use it; otherwise keep original order
-          return 0;
+          // Use rowIndex as proxy for date-added: higher index = more recent = sort first
+          const aIndex = a.rowIndex ?? 0;
+          const bIndex = b.rowIndex ?? 0;
+          return bIndex - aIndex; // Descending (most recent first)
         default:
           return a.console.localeCompare(b.console) || a.game.localeCompare(b.game);
       }
     });
+  }
+
+  /**
+   * Check if any filters are currently active (not at default values)
+   */
+  get filtersActive(): boolean {
+    return this.selectedConsole !== 'All' || this.search !== '' || this.sortBy !== 'title-asc';
+  }
+
+  /**
+   * Reset all filters to their default values
+   */
+  clearFilters(): void {
+    this.selectedConsole = 'All';
+    this.search = '';
+    this.sortBy = 'title-asc';
+    this.filterGames();
+  }
+
+  /**
+   * Clear just the search field
+   */
+  clearSearch(): void {
+    this.search = '';
+    this.searchSubject.next('');
+    this.filterGames();
   }
 }

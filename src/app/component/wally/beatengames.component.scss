@@ -106,4 +106,43 @@
       min-height: 250px;
     }
   }
+
+  .clear-btn, .clear-filters-btn {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 6px;
+    margin-left: -5px;
+  }
+
+  .clear-btn:hover, .clear-filters-btn:hover {
+    background: #eee;
+  }
+
+  .filter-indicator {
+    color: #0066cc;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+
+  .empty-state {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .empty-state button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .empty-state button:hover {
+    background: #0055aa;
+  }
   
