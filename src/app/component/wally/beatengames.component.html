@@ -12,8 +12,26 @@
         <option [value]="item">{{ item }}</option>
         }
       </select>
-      
-      <select title="Image Selected" [(ngModel)]="selectedImageType" (change)="updateBaseGames()">    
+
+      <select title="Status" [(ngModel)]="selectedStatus" (change)="filterGames()">
+        @for(item of statuses; track item){
+        <option [value]="item">{{ item === 'All' ? 'Status' : item }}</option>
+        }
+      </select>
+
+      <select title="Genre" [(ngModel)]="selectedGenre" (change)="filterGames()">
+        @for(item of genres; track item){
+        <option [value]="item">{{ item === 'All' ? 'Genre' : item }}</option>
+        }
+      </select>
+
+      <select title="Region" [(ngModel)]="selectedRegion" (change)="filterGames()">
+        @for(item of regions; track item){
+        <option [value]="item">{{ item === 'All' ? 'Region' : item }}</option>
+        }
+      </select>
+
+      <select title="Image Selected" [(ngModel)]="selectedImageType" (change)="updateBaseGames()">
         <option value="boxart-small">boxart</option>
         <option value="marquee">marquee</option>
       </select>

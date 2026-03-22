@@ -55,6 +55,14 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
     { value: 'date-added', label: 'Date Added' }
   ];
 
+  // Additional filters
+  selectedStatus: string = 'All';
+  selectedGenre: string = 'All';
+  selectedRegion: string = 'All';
+  statuses: string[] = ['All'];
+  genres: string[] = ['All'];
+  regions: string[] = ['All'];
+
   // Sheet configuration
   availableSheets: SheetConfig[] = [];
   selectedSheetId: string = '';
@@ -130,6 +138,10 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
     this.wallyService.getGames(this.selectedImageType, url).subscribe((games) => {
       this.games = games;
       this.consoles = ['All', ...Array.from(new Set(games.map(g => g.console))).sort()];
+      // Extract unique values for additional filters
+      this.statuses = ['All', ...Array.from(new Set(games.map(g => g.status).filter((s): s is string => !!s)))].sort();
+      this.genres = ['All', ...Array.from(new Set(games.map(g => g.genre).filter((s): s is string => !!s)))].sort();
+      this.regions = ['All', ...Array.from(new Set(games.map(g => g.region).filter((s): s is string => !!s)))].sort();
       this.filterGames();
     });
   }
@@ -143,6 +155,9 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
         this.selectedImageType = filters.selectedImageType || 'boxart-small';
         this.search = filters.search || '';
         this.sortBy = filters.sortBy || 'title-asc';
+        this.selectedStatus = filters.selectedStatus || 'All';
+        this.selectedGenre = filters.selectedGenre || 'All';
+        this.selectedRegion = filters.selectedRegion || 'All';
       }
     } catch (e) {
       console.warn('Failed to load persisted filters', e);
@@ -155,7 +170,10 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
         selectedConsole: this.selectedConsole,
         selectedImageType: this.selectedImageType,
         search: this.search,
-        sortBy: this.sortBy
+        sortBy: this.sortBy,
+        selectedStatus: this.selectedStatus,
+        selectedGenre: this.selectedGenre,
+        selectedRegion: this.selectedRegion
       }));
     } catch (e) {
       console.warn('Failed to persist filters', e);
@@ -166,6 +184,9 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
     console.log('filtering games');
     this.visibleGames = this.games.filter(game =>
       (this.selectedConsole === 'All' || game.console === this.selectedConsole) &&
+      (this.selectedStatus === 'All' || game.status === this.selectedStatus) &&
+      (this.selectedGenre === 'All' || game.genre === this.selectedGenre) &&
+      (this.selectedRegion === 'All' || game.region === this.selectedRegion) &&
       (this.search === '' || game.game.toLowerCase().includes(this.search.toLowerCase()))
     );
     this.sortGames();
@@ -196,7 +217,8 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
    * Check if any filters are currently active (not at default values)
    */
   get filtersActive(): boolean {
-    return this.selectedConsole !== 'All' || this.search !== '' || this.sortBy !== 'title-asc';
+    return this.selectedConsole !== 'All' || this.search !== '' || this.sortBy !== 'title-asc' 
+      || this.selectedStatus !== 'All' || this.selectedGenre !== 'All' || this.selectedRegion !== 'All';
   }
 
   /**
@@ -204,6 +226,9 @@ export class GamesBeatenComponent implements OnInit, OnDestroy {
    */
   clearFilters(): void {
     this.selectedConsole = 'All';
+    this.selectedStatus = 'All';
+    this.selectedGenre = 'All';
+    this.selectedRegion = 'All';
     this.search = '';
     this.sortBy = 'title-asc';
     this.filterGames();

@@ -109,3 +109,9 @@ All filter and sort preferences are automatically saved to your browser's localS
 ## Contact
 For questions or suggestions, feel free to open an issue or reach out on GitHub.
 
+
+
+## 📖 Documentation
+Detailed documentation can be found in the following sections:
+- [Feature Index](./docs/features/README.md)
+- [Core Capabilities](./docs/features/core-capabilities.md)

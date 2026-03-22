@@ -35,7 +35,11 @@ export class WallyService {
         game: cols[0],
         console: cols[1],
         url: this.getGameImageUrl(cols[0], cols[1], art),
-        rowIndex: index
+        rowIndex: index,
+        // Optional fields from additional columns (if available)
+        genre: cols[2] || undefined,
+        status: cols[3] || undefined,
+        region: cols[4] || undefined
       }));
   }
 
